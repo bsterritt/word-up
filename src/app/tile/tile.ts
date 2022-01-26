@@ -1,12 +1,15 @@
+
 export class Tile {
     colour: String = '';
     value: String = '';
+    state: String = '';
 
-    constructor(colour: String, value: String = "") { 
-        this.colour = colour;
+    constructor(state: String, value: String = "") { 
+        this.state = state;
         this.value = value;
     }
 
 
     
   }
+

@@ -1,14 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Tile } from './tile/tile';
+import { LetterStateService } from './letter-state.service';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class WordCheckerService {
 
-  constructor() { }
+  constructor(private letterStates: LetterStateService) { }
 
   randomWord!: String;
+
+  
+
+
+ // checkedLetters:  Map<String, String>  = new Map<String, String>();
 
   checkTiles(tileSet : Tile []): Boolean {
     let allMatched = true;
@@ -33,15 +40,25 @@ export class WordCheckerService {
       // exact match
       if ( tileValue == answerLetters[idx] ) {
         console.log(`match! on letter ${idx}`);
-        tile.colour = "green";
+        //tile.colour = "green";
+          tile.state = this.letterStates.MATCHED;
       // not an exact match
       } else {
         allMatched = false;
         if ( answerLetters.includes(tileValue) ) {
           console.log(`match! on letter ${tileValue}`);
-          tile.colour = "yellow";
+          //tile.colour = "yellow";
+          tile.state = this.letterStates.PRESENT;
+        } else {
+          console.log(`${tileValue} does not exist in word`);
+          tile.state = this.letterStates.MISSING;
         }
       }
+
+      // save the info of this letter to be used on keyboard
+     // this.checkedLetters.set(tile.value,tile.state);
+
+      this.letterStates.setLetterState(tile.value,tile.state);
     });
     return allMatched;
   }

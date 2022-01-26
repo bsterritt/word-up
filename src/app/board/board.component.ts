@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Tile } from '../tile/tile';
 import { UserMessageService } from '../user-message.service';
 import { WordCheckerService } from '../word-checker.service';
+import { LetterStateService } from '../letter-state.service';
 
 @Component({
   selector: 'app-board',
@@ -10,7 +11,7 @@ import { WordCheckerService } from '../word-checker.service';
 })
 export class BoardComponent implements OnInit {
 
-  constructor(private msgService : UserMessageService, private wordChecker : WordCheckerService ) { }
+  constructor(private msgService : UserMessageService, private wordChecker : WordCheckerService, private letterStates: LetterStateService  ) { }
 
   defaultColor: string = "grey";
   wordLength: number = 5;
@@ -99,7 +100,7 @@ export class BoardComponent implements OnInit {
     for (var j = 0; j <  this.turnLength; j++) {
       let turn: Tile[] = [];
       for (var i = 0; i <  this.wordLength; i++) {
-        turn.push(new Tile(this.defaultColor,  ""));
+        turn.push(new Tile( this.letterStates.getDefaultState(),  ""));
       }
       
       this.turns[j] = turn;

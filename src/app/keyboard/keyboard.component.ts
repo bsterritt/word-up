@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { LetterStateService } from '../letter-state.service';
 
 @Component({
   selector: 'app-keyboard',
@@ -18,13 +19,19 @@ export class KeyboardComponent implements OnInit {
 
   
   handleKeyClick(k: String): void {
-    //console.log(' KEYboard component onKeyClick ' + k);
     this.keyPressEvent.emit(k);
-    // this.onKeyClick(k);
+  }
+
+  getLetterColour(k: string) {
+    if (k.length == 1) {
+      return this.letterStates.getColourForLetter(k);
+    }
+    return this.letterStates.getDefaultColour();
+    
   }
   
   
-  constructor() { }
+  constructor( private letterStates: LetterStateService ) { }
 
   ngOnInit(): void {
   }

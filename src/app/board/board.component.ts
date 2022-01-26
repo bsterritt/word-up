@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Tile } from '../tile/tile';
+import { UserMessageService } from '../user-message.service';
+import { WordCheckerService } from '../word-checker.service';
 
 @Component({
   selector: 'app-board',
@@ -8,7 +10,7 @@ import { Tile } from '../tile/tile';
 })
 export class BoardComponent implements OnInit {
 
-  constructor() { }
+  constructor(private msgService : UserMessageService, private wordChecker : WordCheckerService ) { }
 
   defaultColor: string = "grey";
   wordLength: number = 5;
@@ -55,14 +57,7 @@ export class BoardComponent implements OnInit {
     } else if ( k == "ENTER" ) {
       // tiles are full, go to next turn
       if (emptyTileIndex ==  -1) {
-
-        // turns are over
-        if (this.currentTurn == this.turnLength -1) {
-          alert('Game Over!');
-        } else {
-          this.currentTurn++;
-        }
-        
+        this.goToNextTurn();        
       } else {
         console.warn('word is not finished')
       }
@@ -78,10 +73,27 @@ export class BoardComponent implements OnInit {
     }
   }
 
+  private goToNextTurn(): void {
+    // winner
+    if (this.wordChecker.checkTiles(this.turns[this.currentTurn])) {
+      this.msgService.showMessage('You WIN!');
+    // not a winner
+    } else {
+      // more turns
+      if (this.currentTurn == this.turnLength -1) {
+        this.msgService.showMessage('Game Over!');
+      } else {
+        this.currentTurn++;
+      }
+    }
+
+
+  }
 
   ngOnInit(): void {
 
-    this.onKeyClick.bind(this);
+    // save the secret answer word
+    this.wordChecker.saveRandomWord();
 
     // poopulate the runs with empty tiles
     for (var j = 0; j <  this.turnLength; j++) {

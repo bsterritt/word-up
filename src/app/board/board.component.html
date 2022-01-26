@@ -1,0 +1,23 @@
+<p>Word Up!</p>
+<!--
+<app-tile colour="grey"></app-tile>
+<app-tile colour="yellow"></app-tile>
+<app-tile colour="green"></app-tile>
+-->
+
+<div class="board-outer">
+    <div class="board-turn turn-{{i}} flex" *ngFor="let turn of turns; let i = index">
+        <div class="board-tile tile-{{j}}" *ngFor="let tile of turn; let j = index">
+            <app-tile colour="grey" [tile]="tile"></app-tile>
+
+        </div>
+    </div>
+</div>
+
+<!--
+<button class="yellow-bg">Yellow</button>
+<button class="green-bg">Green</button>
+ [onKeyClick]="onKeyClick" 
+-->
+
+<app-keyboard   (keyPressEvent)="onKeyClick($event)"></app-keyboard>

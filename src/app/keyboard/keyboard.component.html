@@ -1,0 +1,9 @@
+<div class="keyboard-outer">
+    <div class="keyboard-row flex" *ngFor="let row of keyboardRows; let i = index">
+        <div class="keyboard-row" *ngFor="let boardKey of row; let k = index">
+            <button (click)="handleKeyClick(boardKey)">
+                {{ boardKey }}
+            </button>
+        </div>
+    </div>
+</div>

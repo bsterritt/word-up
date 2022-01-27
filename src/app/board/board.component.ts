@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Tile } from '../tile/tile';
-import { UserMessageService } from '../user-message.service';
+import { GameHistoryService } from '../game-history.service';
 import { WordCheckerService } from '../word-checker.service';
 import { LetterStateService } from '../letter-state.service';
 import { GameStateService } from '../game-state.service';
@@ -13,8 +13,7 @@ import { GameStateService } from '../game-state.service';
 export class BoardComponent implements OnInit {
 
   constructor(
-    private msgService : UserMessageService, 
-    private wordChecker : WordCheckerService, 
+    private gameHistory : GameHistoryService, 
     private letterStates: LetterStateService,
     private gameState: GameStateService
   ) 
@@ -29,11 +28,15 @@ export class BoardComponent implements OnInit {
   wins!: number;
   losses!: number;
   winRate!: number;
+  winStreak!: number;
+  bestWinStreak!: number;
 
   private updateGameHistory():void {
-    this.wins = this.gameState.getWinTotal();
-    this.losses = this.gameState.getLossTotal();
-    this.winRate = this.gameState.getWinRate();    
+    this.wins = this.gameHistory.getWinTotal();
+    this.losses = this.gameHistory.getLossTotal();
+    this.winRate = this.gameHistory.getWinRate();    
+    this.winStreak = this.gameHistory.getWinStreak();
+    this.bestWinStreak = this.gameHistory.getBestWinStreak();
   }
 
   onKeyClick(k: String): void {

@@ -30,6 +30,7 @@ export class BoardComponent implements OnInit {
   winRate!: number;
   winStreak!: number;
   bestWinStreak!: number;
+  guessDistribution: number[] = [];
 
   private updateGameHistory():void {
     this.wins = this.gameHistory.getWinTotal();
@@ -37,6 +38,10 @@ export class BoardComponent implements OnInit {
     this.winRate = this.gameHistory.getWinRate();    
     this.winStreak = this.gameHistory.getWinStreak();
     this.bestWinStreak = this.gameHistory.getBestWinStreak();
+
+    for (var i = 1; i <= this.gameState.turnLength; i++) {
+      this.guessDistribution.push(this.gameHistory.getGuessCountInstances(i));
+    }
   }
 
   onKeyClick(k: String): void {

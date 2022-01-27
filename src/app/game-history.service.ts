@@ -95,5 +95,9 @@ export class GameHistoryService {
 
     return bestStreak;
   }
+
+  getGuessCountInstances(guessCount : number) {
+    return this.getAllGameInfo().filter(gameInfo => gameInfo.turns == guessCount.toString() ).length;
+  }
   
 }

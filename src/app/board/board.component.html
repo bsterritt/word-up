@@ -1,4 +1,4 @@
-<p>Word Up!</p>
+
 <!--
 <app-tile colour="grey"></app-tile>
 <app-tile colour="yellow"></app-tile>
@@ -6,7 +6,7 @@
 -->
 
 <div class="board-outer">
-    <div class="board-turn turn-{{i}} flex" *ngFor="let turn of turns; let i = index">
+    <div class="board-turn turn-{{i}} flex flex-center" *ngFor="let turn of turns; let i = index">
         <div class="board-tile tile-{{j}}" *ngFor="let tile of turn; let j = index">
             <app-tile colour="grey" [tile]="tile"></app-tile>
 
@@ -21,3 +21,10 @@
 -->
 
 <app-keyboard   (keyPressEvent)="onKeyClick($event)"></app-keyboard>
+
+<h2>Your Results</h2>
+<ul>
+    <li>Wins : {{ wins }}</li>
+    <li>Losses : {{ losses }}</li>
+    <li>Winning Percentage : {{ winRate | percent }}</li>
+</ul>

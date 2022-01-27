@@ -1,4 +1,3 @@
-
 export class Tile {
     colour: String = '';
     value: String = '';

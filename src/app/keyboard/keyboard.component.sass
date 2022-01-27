@@ -1,0 +1,21 @@
+$key-width: 30px
+$key-height: $key-width *2
+
+.keyboard-outer 
+    margin-top: 40px
+
+    .keyboard-row
+        margin-bottom: 4px
+        .board-key
+            margin-right: 4px
+            .keyboard-button
+                width: $key-width
+                height: $key-height
+                line-height: $key-height
+                color: white
+                border: 1px solid #ccc
+                &.light-grey-bg
+                    color: black                
+                &.action-button
+                    width: $key-width * 2
+

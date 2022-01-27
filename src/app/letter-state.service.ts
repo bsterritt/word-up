@@ -25,6 +25,10 @@ export class LetterStateService {
     [this.MATCHED,this.matchedColour],
   ]);
 
+  // string constants
+  BACK: string = "BACK";
+  ENTER: string = "ENTER";
+
   checkedLetters:  Map<String, String>  = new Map<String, String>();
 
   setLetterState(letter: String, state: String) {
@@ -51,6 +55,6 @@ export class LetterStateService {
   getDefaultColour(): String {
     return this.defaultColour;
   }
-  
+
   constructor() { }
 }

@@ -3,6 +3,7 @@ import { Tile } from '../tile/tile';
 import { UserMessageService } from '../user-message.service';
 import { WordCheckerService } from '../word-checker.service';
 import { LetterStateService } from '../letter-state.service';
+import { GameStateService } from '../game-state.service';
 
 @Component({
   selector: 'app-board',
@@ -11,20 +12,34 @@ import { LetterStateService } from '../letter-state.service';
 })
 export class BoardComponent implements OnInit {
 
-  constructor(private msgService : UserMessageService, private wordChecker : WordCheckerService, private letterStates: LetterStateService  ) { }
+  constructor(
+    private msgService : UserMessageService, 
+    private wordChecker : WordCheckerService, 
+    private letterStates: LetterStateService,
+    private gameState: GameStateService
+  ) 
+  { 
 
-  defaultColor: string = "grey";
-  wordLength: number = 5;
-  turnLength: number = 6;
-  currentTurn: number = 0;
+  }
 
-  turns = new Array(this.turnLength);
+  turns = new Array(this.gameState.turnLength);
 
-  
+
+  // gameInfo 
+  wins!: number;
+  losses!: number;
+  winRate!: number;
+
+  private updateGameHistory():void {
+    this.wins = this.gameState.getWinTotal();
+    this.losses = this.gameState.getLossTotal();
+    this.winRate = this.gameState.getWinRate();    
+  }
+
   onKeyClick(k: String): void {
     console.log(`onKeyClick on key click : ${k}`);
 
-    let activeTurn = this.turns[this.currentTurn];
+    let activeTurn = this.turns[this.gameState.currentTurn];
     let emptyTileIndex = -1;
 
     // find first tile that is empty
@@ -40,71 +55,58 @@ export class BoardComponent implements OnInit {
     console.log(`first empty  tile is # ${emptyTileIndex}`);
 
     // handle backspace
-    if ( k == "BACK") {
+    if ( k == this.letterStates.BACK) {
       
       if (emptyTileIndex > 0) {
         console.log(`emptying tile # ${emptyTileIndex - 1}`);
         activeTurn[emptyTileIndex - 1].value = "";
       
       } else if (emptyTileIndex == -1) {
-        console.log(`emptying tile # ${this.wordLength -1}`);
-        activeTurn[this.wordLength -1].value = "";
+        console.log(`emptying tile # ${this.gameState.wordLength -1}`);
+        activeTurn[this.gameState.wordLength -1].value = "";
       
         // do nothing if first tile is empty
       } else {
         console.log('backspaced on empty turn');
       }
     // handle enter
-    } else if ( k == "ENTER" ) {
+    } else if ( k == this.letterStates.ENTER ) {
       // tiles are full, go to next turn
       if (emptyTileIndex ==  -1) {
-        this.goToNextTurn();        
+        this.gameState.goToNextTurn( activeTurn ); 
+        this.updateGameHistory();
       } else {
         console.warn('word is not finished')
       }
     // handle letter
     } else {
       
+      // empty space on this turn, add the letter there
       if (firstEmptyTile != null) {
         console.log(' board component onKeyClick updating tile with ' + k);
         firstEmptyTile.value = k;
+      // all letters filled already, do nothing
       } else {
         console.log(' board component onKeyClick all tiles filled');
       }
     }
   }
 
-  private goToNextTurn(): void {
-    // winner
-    if (this.wordChecker.checkTiles(this.turns[this.currentTurn])) {
-      this.msgService.showMessage('You WIN!');
-    // not a winner
-    } else {
-      // more turns
-      if (this.currentTurn == this.turnLength -1) {
-        this.msgService.showMessage('Game Over!');
-      } else {
-        this.currentTurn++;
-      }
-    }
-
-
-  }
-
   ngOnInit(): void {
 
-    // save the secret answer word
-    this.wordChecker.saveRandomWord();
+    this.updateGameHistory();
 
     // poopulate the runs with empty tiles
-    for (var j = 0; j <  this.turnLength; j++) {
+
+    for (var j = 0; j <  this.gameState.turnLength; j++) {
       let turn: Tile[] = [];
-      for (var i = 0; i <  this.wordLength; i++) {
+      for (var i = 0; i <  this.gameState.wordLength; i++) {
         turn.push(new Tile( this.letterStates.getDefaultState(),  ""));
       }
       
       this.turns[j] = turn;
     }
+  
 
 
 

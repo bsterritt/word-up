@@ -105,26 +105,7 @@ export class BoardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.turns = this.gameState.getTurns();
-    // poopulate the runs with empty tiles
-
-    /*
-
-    for (var j = 0; j <  this.gameState.turnLength; j++) {
-      let turn: Tile[] = [];
-      for (var i = 0; i <  this.gameState.wordLength; i++) {
-        turn.push(new Tile( ));
-      }
-      
-      this.turns[j] = turn;
-    }
-    */
-  
-
-
-
-
   }
   
 }

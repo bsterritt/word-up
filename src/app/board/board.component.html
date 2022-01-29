@@ -22,15 +22,4 @@
 
 <app-keyboard   (keyPressEvent)="onKeyClick($event)"></app-keyboard>
 
-<h2>Your Results</h2>
-<ul>
-    <li>Wins : {{ wins }}</li>
-    <li>Losses : {{ losses }}</li>
-    <li>Winning Percentage : {{ winRate | percent }}</li>
-    <li>Win Steak : {{ winStreak }}</li>
-    <li>Best Win Steak : {{ bestWinStreak }}</li>
-</ul>
-<h2>Guess Distribution</h2>
-<ol>
-    <li *ngFor="let guessCount of guessDistribution; let g = index">{{ guessCount }}</li>
-</ol>
+

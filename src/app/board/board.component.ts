@@ -21,8 +21,8 @@ export class BoardComponent implements OnInit {
 
   }
 
-  turns = new Array(this.gameState.turnLength);
-
+ // turns = new Array(this.gameState.turnLength);
+  turns: any;
 
   // gameInfo 
   wins!: number;
@@ -46,6 +46,11 @@ export class BoardComponent implements OnInit {
 
   onKeyClick(k: String): void {
     console.log(`onKeyClick on key click : ${k}`);
+
+    if (!this.gameState.isPlaying()) {
+      console.log(`onKeyClick, game not ready :`);
+      return;
+    }
 
     let activeTurn = this.turns[this.gameState.currentTurn];
     let emptyTileIndex = -1;
@@ -82,7 +87,6 @@ export class BoardComponent implements OnInit {
       // tiles are full, go to next turn
       if (emptyTileIndex ==  -1) {
         this.gameState.goToNextTurn( activeTurn ); 
-        this.updateGameHistory();
       } else {
         console.warn('word is not finished')
       }
@@ -102,18 +106,20 @@ export class BoardComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.updateGameHistory();
-
+    this.turns = this.gameState.getTurns();
     // poopulate the runs with empty tiles
+
+    /*
 
     for (var j = 0; j <  this.gameState.turnLength; j++) {
       let turn: Tile[] = [];
       for (var i = 0; i <  this.gameState.wordLength; i++) {
-        turn.push(new Tile( this.letterStates.getDefaultState(),  ""));
+        turn.push(new Tile( ));
       }
       
       this.turns[j] = turn;
     }
+    */
   
 
 

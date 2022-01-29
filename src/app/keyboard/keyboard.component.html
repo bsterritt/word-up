@@ -1,7 +1,7 @@
 <div class="keyboard-outer">
     <div class="keyboard-row flex flex-center" *ngFor="let row of keyboardRows; let i = index">
         <div class="board-key" *ngFor="let boardKey of row; let k = index">
-            <button (click)="handleKeyClick(boardKey)" class="keyboard-button {{ getLetterColour(boardKey) }}-bg" [ngClass]="{'action-button': boardKey.length > 1}">
+            <button type="button" (click)="handleKeyClick(boardKey)" class="keyboard-button {{ getLetterColour(boardKey) }}-bg" [ngClass]="{'action-button': boardKey.length > 1}">
                 {{ boardKey }}
             </button>
         </div>

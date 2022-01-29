@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { WordCheckerService } from './word-checker.service';
+import { GameStateService } from './game-state.service';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +10,7 @@ export class AppComponent implements OnInit {
   title = 'word-up';
 
   constructor(
-    private wordChecker : WordCheckerService, 
+    private gameState : GameStateService
   ) {
 
   }
@@ -19,6 +19,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     // save the secret answer word
-    this.wordChecker.saveRandomWord();
+    this.gameState.startNewGame();
   }
 }

@@ -12,6 +12,13 @@ $green: #2dd902
 
 
 // styling classes
+
+body, html
+    padding: 0
+    margin: 0
+    font-family: sans-serif
+    color: #222 
+
     // layout
 .flex
     display: flex
@@ -24,6 +31,9 @@ $green: #2dd902
 
 .flex-start
     justify-content: start
+
+.flex-between
+    justify-content: space-between
 
     // color
 
@@ -41,3 +51,28 @@ $green: #2dd902
     background: $green
 
 
+$tile-size: 42px
+
+.tile
+    display: block
+    width: $tile-size
+    height: $tile-size
+    border-radius: 6px
+    margin: 4px
+    text-align: center
+    line-height: $tile-size
+    font-family: sans-serif
+    color: white
+    transition: 0.5s background-color  ease-in-out
+                      
+    &.light-grey-bg
+        color: black
+
+    .tile-1 &
+        transition-delay: 0.5s
+    .tile-2 &
+        transition-delay: 1s
+    .tile-3 &
+        transition-delay: 1.5s
+    .tile-4 &
+        transition-delay: 2s   

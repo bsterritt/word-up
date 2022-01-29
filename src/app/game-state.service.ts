@@ -3,51 +3,126 @@ import { Tile } from './tile/tile';
 import { UserMessageService } from './user-message.service';
 import { WordCheckerService } from './word-checker.service';
 import { GameHistoryService } from './game-history.service';
-
+import { LetterStateService } from './letter-state.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Observer, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameStateService {
-  PLAYING: String = "playing";
+  PLAYING: string = "playing";
   WON: string = "won";
   LOST: string = "lost";
-  
-  constructor(
-    private msgService : UserMessageService, 
-    private wordChecker : WordCheckerService,   
-    private gameHistory : GameHistoryService
-  ) { 
-    this.gameHistory.setWinToken(this.WON);
-    this.gameHistory.setLossToken(this.LOST);
-  }
+  STARTING: string = "starting";
+
+  currentState: string = this.STARTING;
 
   wordLength: number = 5;
   turnLength: number = 6;
   currentTurn: number = 0;
 
+  turns = new Array(this.turnLength);
+
+  didWin(): boolean {
+    return this.currentState == this.WON;
+  } 
+  didLose(): boolean {
+    return this.currentState == this.LOST;
+  } 
+
+  isPlaying(): boolean {
+    return this.currentState == this.PLAYING;
+  }
+
+  constructor(
+    private msgService : UserMessageService, 
+    private wordChecker : WordCheckerService,   
+    private gameHistory : GameHistoryService,
+    private letterState : LetterStateService,
+    private router : Router
+  ) { 
+    this.gameHistory.setWinToken(this.WON);
+    this.gameHistory.setLossToken(this.LOST);
+    this.initTurns();
+  }
+
+
+
+  
 
 
 
 
-  currentState: String = this.PLAYING;
 
+  
 
+  initTurns() {
+    // poopulate the runs with empty tiles
+    this.turns = new Array(this.turnLength);
+
+    for (var j = 0; j <  this.turnLength; j++) {
+      let turn: Tile[] = [];
+      for (var i = 0; i <  this.wordLength; i++) {
+        turn.push(new Tile());
+      }
+      
+      this.turns[j] = turn;
+    }    
+  }
+
+  getTurns() {
+    return this.turns;
+  }
 
   // game functions
-  endGame( didWin : Boolean ) {
+  endGame( didWin : Boolean ): void {
     if ( didWin ) {
       this.currentState = this.WON;
-      this.msgService.showMessage('You WIN!');
     } else {
       this.currentState = this.LOST;
-      this.msgService.showMessage('Game Over!');
     }
 
     this.gameHistory.saveGame(this.currentState, this.currentTurn);
 
+    this.router.navigate(['stats']);
     
 
+  }
+
+
+
+
+
+  startNewGame( externalGameStartObserver? : Observer<any> ) {
+    this.currentState = this.STARTING;
+
+    const gameStartObserver : Observer<any> = {
+      next: () => console.log('gameStartObserver got a next value: '),
+      error: (err: Error) => console.error('gameStartObserver got an error: ' + err),
+      complete: () => {
+        console.log('gameStartObserver got a complete notification.  ready to play!');
+        
+        this.currentTurn = 0;
+        // clear/ready keyboard
+        this.letterState.clearLetterStates();
+        // clear/ready guessed letters
+        this.initTurns();
+        // reset sectret word
+        
+        this.currentState = this.PLAYING;
+
+        // go to main game board
+        this.router.navigate(['']);     
+        
+        // notify an extrnal observer if passed
+        if (externalGameStartObserver != null) {
+          externalGameStartObserver.complete();
+        }
+      }
+    };    
+
+    this.wordChecker.saveRandomWord(gameStartObserver);
   }
 
   goToNextTurn( turn : Tile[]): Boolean {

@@ -31,6 +31,10 @@ export class LetterStateService {
 
   checkedLetters:  Map<String, String>  = new Map<String, String>();
 
+  clearLetterStates() {
+    this.checkedLetters.clear();
+  }
+
   setLetterState(letter: String, state: String) {
     this.checkedLetters.set( letter, state);
   }

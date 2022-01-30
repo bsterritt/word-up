@@ -45,7 +45,7 @@ export class BoardComponent implements OnInit {
   }
 
   onKeyClick(k: String): void {
-    console.log(`onKeyClick on key click : ${k}`);
+    console.log(`onKeyClick on key click : ${k}, current turn is ${this.gameState.currentTurn}`);
 
     if (!this.gameState.isPlaying()) {
       console.log(`onKeyClick, game not ready :`);

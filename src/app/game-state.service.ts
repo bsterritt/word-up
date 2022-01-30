@@ -6,6 +6,7 @@ import { GameHistoryService } from './game-history.service';
 import { LetterStateService } from './letter-state.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observer, Observable } from 'rxjs';
+import { ApiServiceService, checkAnswerResponse } from './api-service.service';
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +37,7 @@ export class GameStateService {
   }
 
   constructor(
-    private msgService : UserMessageService, 
+    private api: ApiServiceService,
     private wordChecker : WordCheckerService,   
     private gameHistory : GameHistoryService,
     private letterState : LetterStateService,
@@ -46,16 +47,6 @@ export class GameStateService {
     this.gameHistory.setLossToken(this.LOST);
     this.initTurns();
   }
-
-
-
-  
-
-
-
-
-
-  
 
   initTurns() {
     // poopulate the runs with empty tiles
@@ -82,17 +73,9 @@ export class GameStateService {
     } else {
       this.currentState = this.LOST;
     }
-
     this.gameHistory.saveGame(this.currentState, this.currentTurn);
-
     this.router.navigate(['stats']);
-    
-
   }
-
-
-
-
 
   startNewGame( externalGameStartObserver? : Observer<any> ) {
     this.currentState = this.STARTING;
@@ -108,8 +91,7 @@ export class GameStateService {
         this.letterState.clearLetterStates();
         // clear/ready guessed letters
         this.initTurns();
-        // reset sectret word
-        
+        // set game state as ready/playing
         this.currentState = this.PLAYING;
 
         // go to main game board
@@ -122,27 +104,36 @@ export class GameStateService {
       }
     };    
 
-    this.wordChecker.saveRandomWord(gameStartObserver);
+    // call to server to set a new game word
+    this.api.saveRandomWord(gameStartObserver);
   }
 
-  goToNextTurn( turn : Tile[]): Boolean {
-    // winner
-    if (this.wordChecker.checkTiles(turn)) {
-      this.endGame(true);
-      return true;
-    // not a winner
-    } else {
-      // more turns
-      if (this.isLastTurn()) {
-        this.endGame(false);
+  goToNextTurn( turn : Tile[]) {
+    
+    this.wordChecker.checkTiles(turn).subscribe({
+      error : (err: Error) => {
+        console.log("wordChecker.checkTilesAync ERROR!",err)
+      },
+      next: ( tile : Tile) => {
+        console.log("wordChecker.checkTilesAync NEXT!", tile.state);
+      },
+      complete: () => {
+        console.log("wordChecker.checkTilesAync COMPLETE!");
         
-      // no more turns
-      } else {
-        this.currentTurn++;
-      }
-    }
-
-    return false;
+        if (turn.every(tile => tile.state == this.letterState.MATCHED)) {
+          this.endGame(true);
+        // not a winner
+        } else {
+          // more turns
+          if (this.isLastTurn()) {
+            this.endGame(false);
+          // no more turns
+          } else {
+            this.currentTurn++;
+          }
+        }         
+      },
+    });
   }
 
   isLastTurn(): Boolean {

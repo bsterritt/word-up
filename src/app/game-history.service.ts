@@ -74,10 +74,8 @@ export class GameHistoryService {
   getWinStreak(): number {
     let winStreak = 0;
     let priorGames = this.getAllGameInfo();
-    let lastLoss = priorGames.findIndex(gameInfo => gameInfo.result == this.LOSSTOKEN );
-
-
-    return (priorGames.length - 1 ) - lastLoss;
+    let lastLoss = priorGames.reverse().findIndex(gameInfo => gameInfo.result == this.LOSSTOKEN );
+    return priorGames.length  - Math.abs(lastLoss - priorGames.length);
   }
 
   getBestWinStreak(): number {

@@ -125,7 +125,55 @@ export class GameStateService {
     this.wordChecker.saveRandomWord(gameStartObserver);
   }
 
-  goToNextTurn( turn : Tile[]): Boolean {
+  goToNextTurn( turn : Tile[]) {
+    
+    this.wordChecker.checkTilesAync(turn).subscribe({
+      error : (err: Error) => {
+        console.log("wordChecker.checkTilesAync ERROR!",err)
+      },
+      next: ( tile : Tile) => {
+        console.log("wordChecker.checkTilesAync NEXT!", tile.state);
+      },
+      complete: () => {
+        console.log("wordChecker.checkTilesAync COMPLETE!");
+        
+        if (turn.every(tile => tile.state == this.letterState.MATCHED)) {
+          this.endGame(true);
+        // not a winner
+        } else {
+          // more turns
+          if (this.isLastTurn()) {
+            this.endGame(false);
+          // no more turns
+          } else {
+            this.currentTurn++;
+          }
+        }         
+      },
+    });
+    
+
+    /*
+    this.wordChecker.checkTilesAync(turn).subscribe((allMatched : Boolean) => {
+      // winner
+      if (allMatched) {
+        this.endGame(true);
+      // not a winner
+      } else {
+        // more turns
+        if (this.isLastTurn()) {
+          this.endGame(false);
+        // no more turns
+        } else {
+          this.currentTurn++;
+        }
+      }
+
+    });
+    */
+
+
+/*
     // winner
     if (this.wordChecker.checkTiles(turn)) {
       this.endGame(true);
@@ -143,6 +191,8 @@ export class GameStateService {
     }
 
     return false;
+
+    */
   }
 
   isLastTurn(): Boolean {

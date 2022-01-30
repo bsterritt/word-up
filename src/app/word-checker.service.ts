@@ -5,6 +5,12 @@ import { HttpClient } from '@angular/common/http';
 import { Tile } from './tile/tile';
 import { LetterStateService } from './letter-state.service';
 
+interface checkAnswerResponse {
+  status : string,
+  answer: string,
+  message: string,
+  matchInfo: string[] 
+} 
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +27,7 @@ export class WordCheckerService {
   apiRoot: string = "http://localhost:8000/api";
 
 
- // checkedLetters:  Map<String, String>  = new Map<String, String>();
+
 
   checkTiles(tileSet : Tile []): Boolean {
     let allMatched = true;
@@ -79,6 +85,35 @@ export class WordCheckerService {
     const answerApiPath = `${this.apiRoot}/answer`;
     console.log(`fetching random answer from ${answerApiPath}`)
     return this.http.get< { answer: string }>(answerApiPath);
+  }
+
+  fetchAnswerMatchInfo( answer : string): Observable<checkAnswerResponse> {
+    const checkAnswerApiPath = `${this.apiRoot}/checkAnswer/${answer}`;
+    console.log(`fetching answer info from ${checkAnswerApiPath}`)
+    return this.http.get<checkAnswerResponse>(checkAnswerApiPath);    
+  }
+
+  checkTilesAync(tileSet : Tile []) {
+    let tilesCheckedObservable = new Observable<Tile>((observer) => {
+      this.fetchAnswerMatchInfo( tileSet.map(tile => tile.value.toLowerCase()).join("") ).subscribe( ( answerCheckInfo: checkAnswerResponse  ) => {
+        console.log("answer match API retruned info",answerCheckInfo);
+        tileSet.forEach((tile,idx) => {
+          tile.state = answerCheckInfo.matchInfo[idx];
+          this.letterStates.setLetterState(tile.value,tile.state);
+          console.log("tile state updated",tile);
+          observer.next(tile);
+        });
+        
+        console.log("match info FINISHED!");
+        observer.complete();
+      });     
+       
+    });
+
+
+
+
+    return tilesCheckedObservable;
   }
 
   saveRandomWord(wordReadyObserver: Observer<any> ):  void {

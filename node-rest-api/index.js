@@ -5,6 +5,7 @@ let express = require('express'),
 
 const answersRoute = require('./routes/answers.routes');
 const answerRoute = require('./routes/answer.routes');
+const checkAnswerRoute = require('./routes/checkAnswer.routes');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(cors());
 // API root
 app.use('/api', answersRoute);
 app.use('/api', answerRoute);
+app.use('/api', checkAnswerRoute);
 
 // PORT
 const port = process.env.PORT || 8000;

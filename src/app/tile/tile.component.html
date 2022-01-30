@@ -1,1 +1,1 @@
-<span class="tile {{ getTileColour(tile) }}-bg">{{ tile.value }}</span>
+<span class="tile {{ getTileColour(tile) }}-bg " [ngClass]="{ 'error' : tile.state == 'error'  }">{{ tile.value }}</span>

@@ -122,6 +122,9 @@ export class GameStateService {
         
         if (turn.every(tile => tile.state == this.letterState.MATCHED)) {
           this.endGame(true);
+
+        } else if (turn.every(tile => tile.state == this.letterState.ERROR)) {
+          alert("Invalid Word");
         // not a winner
         } else {
           // more turns

@@ -19,8 +19,10 @@ export class WordCheckerService {
   answersInitialized: Boolean = false;
 
   checkTiles(tileSet : Tile []) {
+    let word = tileSet.map(tile => tile.value.toLowerCase()).join("");
+
     let tilesCheckedObservable = new Observable<Tile>((observer) => {
-      this.api.fetchAnswerMatchInfo( tileSet.map(tile => tile.value.toLowerCase()).join("") ).subscribe( ( answerCheckInfo: checkAnswerResponse  ) => {
+      this.api.fetchAnswerMatchInfo( word ).subscribe( ( answerCheckInfo: checkAnswerResponse  ) => {
         console.log("answer match API retruned info",answerCheckInfo);
         tileSet.forEach((tile,idx) => {
           tile.state = answerCheckInfo.matchInfo[idx];

@@ -42,13 +42,15 @@ body, html
 
 .dark-grey-bg 
     background: $dark-grey
+    color: white
 
 .yellow-bg 
     background: $yellow
-
+    color: white
 
 .green-bg 
     background: $green
+    color: white
 
 
 $tile-size: 42px
@@ -62,12 +64,21 @@ $tile-size: 42px
     text-align: center
     line-height: $tile-size
     font-family: sans-serif
-    color: white
+    color: black
+    background: $light-grey
     transition: 0.5s background-color  ease-in-out
-                      
-    &.light-grey-bg
-        color: black
-
+    border: 1px solid white
+    &.error
+        border: 1px solid red                 
+    &.dark-grey-bg 
+        background: $dark-grey
+        color: white
+    &.yellow-bg 
+        background: $yellow
+        color: white
+    &.green-bg 
+        background: $green
+        color: white        
     .tile-1 &
         transition-delay: 0.5s
     .tile-2 &

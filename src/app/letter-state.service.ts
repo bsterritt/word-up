@@ -10,6 +10,7 @@ export class LetterStateService {
   PRESENT: String = "present";
   MATCHED: String = "matched";
   MISSING: String = "missing";
+  ERROR: String = "error";
 
   // colors
 

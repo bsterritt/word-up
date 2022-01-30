@@ -29,6 +29,7 @@ const answersRoute = require('./routes/answers.routes');
 const answerRoute = require('./routes/answer.routes');
 const checkAnswerRoute = require('./routes/checkAnswer.routes');
 const saveAnswerRoute = require('./routes/saveAnswer.route');
+const wordCheckRoute = require('./routes/words.route');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -38,13 +39,9 @@ app.use(cors());
 
 console.log(`connecting to mongoDB at ${myDb.url}`);
 
-
-// load built ng app
-//app.use(express.static(path.join(__dirname, 'dist/angular-words')));
-
 app.use(
   session({
-    secret: 'belligerent wookie',
+    secret: 'dsfdfsafdsag55tgg',
     resave: false,
     saveUninitialized: false,
     store: new (require('express-sessions'))({
@@ -63,6 +60,7 @@ app.use(apiBase, answersRoute);
 app.use(apiBase, answerRoute);
 app.use(apiBase, checkAnswerRoute);
 app.use(apiBase, saveAnswerRoute);
+app.use(apiBase, wordCheckRoute);
 
 wordRoute.route('/').get((req,res) => {
   res.sendFile(path.join(__dirname, '../dist/word-up/index.html'));

@@ -1,3 +1,7 @@
+const PRESENT = "present";
+const MATCHED = "matched";
+const MISSING = "missing";
+
 const getMatchInfo = (testAnswer, answer) => {
     // invalid test
     if(!testAnswer || testAnswer.length != answer.length) {

@@ -11,6 +11,13 @@ export interface checkAnswerResponse {
   matchInfo: string[] 
 } 
 
+export interface checkWordResponse {
+  status : string,
+  word: string,
+  message: string,
+  isWord: boolean
+} 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -33,7 +40,25 @@ export class ApiServiceService {
    console.log(`fetching answers from ${answersApiPath}`)
    return this.http.get<String[]>(answersApiPath);
   }
-  
+  // fetch info about whther an answer matches the secret answer
+  checkIsWord( word : string): Observable<checkWordResponse> {
+    const checkWordApiPath = `${this.apiRoot}/checkWord/${word}`;
+    console.log(`fetching answer info from ${checkWordApiPath}`);
+    if (environment.production) {
+      return this.http.get<checkWordResponse>(checkWordApiPath);   
+    // fake the check answer service in local
+    } else {
+      let fakeObservable = new Observable<checkWordResponse>((observer) => {
+
+        observer.next(
+          {"status":"SUCCESS","word": word,"message":"Successful Word Check","isWord":false}
+        );
+        observer.complete();
+      });
+      return fakeObservable;
+    }    
+
+  }
   // fetch info about whther an answer matches the secret answer
   fetchAnswerMatchInfo( answer : string): Observable<checkAnswerResponse> {
     const checkAnswerApiPath = `${this.apiRoot}/checkAnswer/${answer}`;
@@ -44,7 +69,9 @@ export class ApiServiceService {
     } else {
       let fakeObservable = new Observable<checkAnswerResponse>((observer) => {
         let fakeAnswer = "dummy";
-        let matchInfo = ["missing","missing","missing","present","missing"];
+        //  let matchInfo = ["missing","missing","missing","present","missing"];
+        let matchInfo = new Array(5).fill("error");
+        
         if (answer == fakeAnswer) {
           matchInfo = new Array(5).fill("matched");
         }

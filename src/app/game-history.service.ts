@@ -75,6 +75,9 @@ export class GameHistoryService {
     let winStreak = 0;
     let priorGames = this.getAllGameInfo();
     let lastLoss = priorGames.reverse().findIndex(gameInfo => gameInfo.result == this.LOSSTOKEN );
+    if (lastLoss < 0) {
+      return priorGames.length;
+    }
     return priorGames.length  - Math.abs(lastLoss - priorGames.length);
   }
 
